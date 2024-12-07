@@ -39,7 +39,46 @@ FS::format()
 int
 FS::create(std::string filepath)
 {
-    std::cout << "\n";
+    int8_t i;
+    for (i = 0; i < N_DIRECTORIES; i++) {
+        if (current_direct[i].file_name[0] == '\0') {
+            break;
+        }
+    }
+
+    if (static_cast<int>(i) == 64) {
+        std::cout << "No space available\n";
+        return 0;
+    }
+
+
+
+
+
+
+    int8_t j = filepath.find_last_of('/');
+    std::string source_file = filepath.substr(j + 1, filepath.size() - j);
+    // std::string sourcepath = filepath.substr(0, i);
+
+    // if (sourcepath != "") {
+    //     int8_t res = set_current_to(sourcepath);
+    //     if (res < 0) {
+    //         return 0;
+    //     }
+    // }
+
+
+    // get user input for the file content
+    std::string content;
+    std::string line;
+    while (std::getline(std::cin, line) && !line.empty()) {
+        content += line + "\n";
+    }
+    
+    if(source_file.size() > 55){
+        std::cout << "File name longer then 56\n";
+        return 0;
+    }
 
     int8_t file_index = find_file(filepath, current_direct);
     if (file_index >= 0) {
@@ -55,13 +94,6 @@ FS::create(std::string filepath)
     fat[free_block] = FAT_EOF;
     disk.write(FAT_BLOCK, (uint8_t*)fat);
 
-    // get user input for the file content
-    std::string content;
-    std::string line;
-    while (std::getline(std::cin, line) && !line.empty()) {
-        content += line + "\n";
-    }
-    
     dir_entry new_file;
     std::strncpy(new_file.file_name, filepath.c_str(), sizeof(new_file.file_name) - 1);
     new_file.file_name[sizeof(new_file.file_name) - 1] = '\0'; // Ensure null-termination
@@ -76,6 +108,9 @@ FS::create(std::string filepath)
         if (current_direct[i].file_name[0] == '\0') {
             current_direct[i] = new_file;
             break;
+        }else if (std::strcmp(current_direct[i].file_name, source_file.c_str()) == 0) {
+            std::cout << source_file << " already exists\n";
+            return 0;
         }
     }
 
@@ -99,6 +134,11 @@ FS::cat(std::string filepath)
         return 0;
     }
 
+    if (current_direct[file_index].type != TYPE_FILE){
+        std::cout << filepath << " is not a file" << std::endl;
+        return 0;
+    }
+
     int8_t right = static_cast<int>(current_direct[file_index].access_rights);
     if (right == 1 || right == 2 || right == 3) {
         std::cout << "Permission denied\n";
@@ -113,8 +153,6 @@ FS::cat(std::string filepath)
         std::cout << (char*)buffer;
         block = fat[block];
     }
-
-    std::cout << "\n";
     return 0;
 }
 
@@ -122,20 +160,23 @@ FS::cat(std::string filepath)
 int
 FS::ls()
 {
-    std::cout << "\n";
 
-    std::cout << "\nname        type       accessrights     size\n";
-    std::cout << "____________________________________________________\n";
+    std::cout << "name        type       accessrights     size\n";
+    std::cout << "______________________________________________\n";
     for (unsigned i = 0; i < N_DIRECTORIES; ++i) {
         if (current_direct[i].file_name[0] != '\0') { // Check if entry is valid
             int name_len = std::strlen(current_direct[i].file_name);
             std::cout << current_direct[i].file_name << std::setw(16-name_len);
             std::cout << (current_direct[i].type == TYPE_DIR ? "dir" : "file") << "\t";
             std::cout << "  "
-                      << ((current_direct[i].access_rights & READ) ? "R" : "-")
-                      << ((current_direct[i].access_rights & WRITE) ? "W" : "-")
-                      << ((current_direct[i].access_rights & EXECUTE) ? "X" : "-") << "\t";
-            std::cout << "         " << current_direct[i].size << "\n";
+                      << ((current_direct[i].access_rights & READ) ? "r" : "-")
+                      << ((current_direct[i].access_rights & WRITE) ? "w" : "-")
+                      << ((current_direct[i].access_rights & EXECUTE) ? "x" : "-") << "\t";
+            
+            if (current_direct[i].type == TYPE_DIR)
+                std::cout << "         " << "-\n";
+            else
+                std::cout << "         " << current_direct[i].size << "\n";
         }
     }
     return 0;
@@ -173,7 +214,7 @@ FS::cp(std::string sourcepath, std::string destpath)
     }
 
     int8_t dest_file_index;
-    dest_file_index = 0;
+    dest_file_index = -2;
     int8_t j = destpath.size() - 1; 
     while (destpath[j] != '/' && j > 0) {
         j--;
@@ -184,14 +225,18 @@ FS::cp(std::string sourcepath, std::string destpath)
     int8_t dest_dir_index = parent_index[current_index];
     if (j == 0) {
         if (destpath[0] == '/') {
-            dest_file = destpath.substr(1, destpath.size() - 1);
-            destpath = "/";
+            // dest_file = destpath.substr(1, destpath.size() - 1);
+            // destpath = "/";
         }else{
-            dest_file = destpath;
+            dest_file = source_file;
             dest_file_index = find_file(destpath, current_direct);
             if (dest_file_index >= 0) {
-                std::cout << destpath << " already exists\n";
-                return 0;
+                if (current_direct[dest_file_index].type == TYPE_DIR){
+                    dest_file_index = -2;
+                }else{
+                    std::cout << destpath << " already exists\n";
+                    return 0;
+                }
             }
             std::memcpy(dest_direct, current_direct, sizeof(current_direct));
         }
@@ -201,7 +246,7 @@ FS::cp(std::string sourcepath, std::string destpath)
     }
 
     // check if the source file and destination file is in the same directory
-    if (source_file_index >= 0 && dest_file_index < 0){
+    if (source_file_index >= 0 && dest_file_index >= 0){
         for (int i = 0; i < N_DIRECTORIES; i++) {
             if (current_direct[i].file_name[0] == '\0') {
                 current_direct[i] = source_file_copy;
@@ -219,7 +264,7 @@ FS::cp(std::string sourcepath, std::string destpath)
 
     int8_t res;
     if (source_file_index < 0) {
-        res = cd(sourcepath);
+        res = set_current_to(sourcepath);
         if (res < 0) {
             return 0;
         }
@@ -231,7 +276,7 @@ FS::cp(std::string sourcepath, std::string destpath)
         source_file_copy = current_direct[source_file_index];
     }
     // if we found source file
-    if (source_file_index >= 0 && dest_file_index < 0){
+    if (source_file_index >= 0 && dest_file_index >= 0){
         for (int i = 0; i < N_DIRECTORIES; i++) {
             if (dest_direct[i].file_name[0] == '\0') {
                 dest_direct[i] = source_file_copy;
@@ -249,13 +294,25 @@ FS::cp(std::string sourcepath, std::string destpath)
 
     current_index = temp_index;   // restore current index for destination
     std::memcpy(current_direct, temp_dir, sizeof(current_direct));
-
-    res = cd(destpath);
+    res = set_current_to(destpath);
     if (res < 0) {
-        return 0;
+        for (int i = 0; i < N_DIRECTORIES; i++) {
+            if (current_direct[i].file_name[0] == '\0') {
+                current_direct[i] = source_file_copy;
+                std::strncpy(current_direct[source_file_index].file_name, destpath.c_str(), sizeof(current_direct[source_file_index].file_name) - 1);
+                current_direct[source_file_index].file_name[sizeof(current_direct[source_file_index].file_name) - 1] = '\0'; // Ensure null-termination
+                disk.write(parent_index[current_index], (uint8_t*)current_direct);
+                CWD = tempcwd;
+                current_index = temp_index;
+                disk.read(parent_index[current_index], (uint8_t*)current_direct);
+                return 0;
+            }
+        }
     }
+    j = destpath.find_last_of('/');
+    dest_file = destpath.substr(j + 1, destpath.size() - j);
     dest_file_index = find_file(dest_file, current_direct);
-    if (dest_file_index >= 0) {
+    if (dest_file_index >= 0 && current_direct[dest_file_index].type == TYPE_FILE) {
         std::cout << dest_file_index << " already exists\n";
         return 0;
     }
@@ -263,8 +320,6 @@ FS::cp(std::string sourcepath, std::string destpath)
     for (int i = 0; i < N_DIRECTORIES; i++) {
         if (current_direct[i].file_name[0] == '\0') {
             current_direct[i] = source_file_copy;
-            std::strncpy(current_direct[i].file_name, dest_file.c_str(), sizeof(current_direct[i].file_name) - 1);
-            current_direct[i].file_name[sizeof(current_direct[i].file_name) - 1] = '\0'; // Ensure null-termination
             disk.write(parent_index[current_index], (uint8_t*)current_direct);
             break;
         }
@@ -302,6 +357,11 @@ FS::mv(std::string sourcepath, std::string destpath)
         }else{
             source_file = sourcepath;
             source_file_index = find_file(sourcepath, current_direct);
+            if (source_file_index <0) {
+                std::cout << source_file << " not found\n";
+                return 0;
+            }
+        
             source_file_copy = current_direct[source_file_index];
         }
     }else{
@@ -315,7 +375,7 @@ FS::mv(std::string sourcepath, std::string destpath)
 
     int8_t res;
     if (source_file_index < 0) {
-        res = cd(sourcepath);
+        res = set_current_to(sourcepath);
         if (res < 0) {
             return 0;
         }
@@ -335,18 +395,54 @@ FS::mv(std::string sourcepath, std::string destpath)
     std::memcpy(current_direct, temp_dir, sizeof(current_direct));
     std::memcpy(parent_index, temp_parent_index, sizeof(parent_index));
 
-    res = cd(destpath);
-    if (res < 0) {
-        return 0;
+    // destpath
+    
+    i = destpath.find_last_of('/');
+    std::string dest_file;
+    if (i >= 0){
+        if (destpath[0] != '/') {
+            dest_file = destpath.substr(i + 1, destpath.size() - i);
+            destpath = destpath.substr(0, i);
+        }
+    }else{
+        dest_file = destpath;
     }
 
-    for (int i = 0; i < N_DIRECTORIES; i++) {
-        if (current_direct[i].file_name[0] == '\0') {
-            current_direct[i] = source_file_copy;
-            disk.write(parent_index[current_index], (uint8_t*)current_direct);
-            break;
+    if (dest_file != "") {
+        int8_t dest_file_index = find_file(dest_file, current_direct);
+        if (dest_file_index >= 0) {
+            if (current_direct[dest_file_index].type == TYPE_FILE) {
+                std::cout << dest_file << " already exists\n";
+                return 0;
+            }
         }
     }
+
+    if (destpath != "") {
+        res = set_current_to(destpath);
+        if (res < 0) {
+            std::strncpy(current_direct[source_file_index].file_name, dest_file.c_str(), sizeof(current_direct[source_file_index].file_name) - 1);
+            current_direct[source_file_index].file_name[sizeof(current_direct[source_file_index].file_name) - 1] = '\0'; // Ensure null-termination
+            disk.write(parent_index[current_index], (uint8_t*)current_direct);
+            CWD = tempcwd;
+            current_index = temp_index;
+            disk.read(parent_index[current_index], (uint8_t*)current_direct);
+            return 0;
+        }else{
+            for (int i = 0; i < N_DIRECTORIES; i++) {
+                if (current_direct[i].file_name[0] == '\0') {
+                    current_direct[i] = source_file_copy;
+                    disk.write(parent_index[current_index], (uint8_t*)current_direct);
+                    break;
+                }else if (std::strcmp(current_direct[i].file_name, dest_file.c_str()) == 0 && current_direct[i].type == TYPE_FILE) {
+                    std::cout << dest_file << " already exists\n";
+                    return 0;
+                }
+            }
+
+        }
+    }
+
 
     std::memset(&source_direct[source_file_index], 0, sizeof(dir_entry));
     disk.write(source_parent_index, (uint8_t*)source_direct);
@@ -545,49 +641,80 @@ FS::append(std::string filepath1, std::string filepath2)
 int
 FS::mkdir(std::string dirpath)
 {
-    std::cout << "FS::mkdir(" << dirpath << ")\n";
+    std::string tempcwd = CWD;
+    int8_t temp_parent_index[64];
+    std::memcpy(temp_parent_index, parent_index, sizeof(parent_index));
+    int8_t temp_index = current_index;
 
-    int8_t file_index = find_file(dirpath, current_direct);
-    if (file_index >= 0) {
-        std::cout << dirpath << " already exists\n";
-        return 0;
-    }
+    int8_t size = dirpath.size() - 1;
+    int8_t j = 0;
+    std::string dirname;
+    for (int i = 0; i < size; i++) {
+        if (dirpath[i] == '/' || i == size - 1) {
+            dirname = dirpath.substr(j, i - j);
+            if (i == size - 1) {
+                dirname = dirpath.substr(j, size - j + 1);
+            }
+            j = i + 1;
+            if(dirname.size() > 55){
+                std::cout << "Directory name longer then 55 char\n";
+                return 0;
+            }
 
-    int free_block = find_free_block();
-    if (free_block < 0) {
-        return 0;
-    }
+            int8_t file_index = find_file(dirname, current_direct);
+            if (file_index >= 0 || dirname == "..") {
+                set_current_to(dirname);
+            }else{
+                int free_block = find_free_block();
+                if (free_block < 0) {
+                    return 0;
+                }
 
-    fat[free_block] = FAT_EOF;
-    disk.write(FAT_BLOCK, (uint8_t*)fat);
+                fat[free_block] = FAT_EOF;
+                disk.write(FAT_BLOCK, (uint8_t*)fat);
 
-    dir_entry folder;
-    std::strncpy(folder.file_name, dirpath.c_str(), sizeof(folder.file_name) - 1);
-    folder.file_name[sizeof(folder.file_name) - 1] = '\0'; // Ensure null-termination
-    folder.size = 0;
-    folder.first_blk = free_block;
-    folder.type = TYPE_DIR;
-    folder.access_rights = READ | WRITE | EXECUTE;
+                dir_entry folder;
+                std::strncpy(folder.file_name, dirname.c_str(), sizeof(folder.file_name) - 1);
+                folder.file_name[sizeof(folder.file_name) - 1] = '\0'; // Ensure null-termination
+                folder.size = 0;
+                folder.first_blk = free_block;
+                folder.type = TYPE_DIR;
+                folder.access_rights = READ | WRITE | EXECUTE;
 
-    for (int i = 0; i < N_DIRECTORIES; i++) {
-        if (current_direct[i].file_name[0] == '\0') {
-            current_direct[i] = folder;
-            break;
+                for (int i = 0; i < N_DIRECTORIES; i++) {
+                    if (current_direct[i].file_name[0] == '\0') {
+                        current_direct[i] = folder;
+                        break;
+                    }else if (std::strcmp(current_direct[i].file_name, dirname.c_str()) == 0) {
+                        std::cout << dirname << " already exists\n";
+                        return 0;
+                    }
+                }
+
+                // write the new directory to parent directory
+                if (CWD == "/") {
+                    disk.write(ROOT_BLOCK, (uint8_t*)current_direct);
+                }else{
+                    disk.write(parent_index[current_index], (uint8_t*)current_direct);
+                }
+
+                // create a new directory with no files
+                dir_entry new_direct[N_DIRECTORIES];
+                std::memset(new_direct, 0, sizeof(new_direct));
+                disk.write(free_block, (uint8_t*)new_direct);
+
+                set_current_to(dirname);
+
+            }
+            
         }
     }
-
-    // write the new directory to parent directory
-    if (CWD == "/") {
-        disk.write(ROOT_BLOCK, (uint8_t*)current_direct);
-    }else{
-        disk.write(parent_index[current_index], (uint8_t*)current_direct);
-    }
-
-    // create a new directory with no files
-    dir_entry new_direct[N_DIRECTORIES];
-    std::memset(new_direct, 0, sizeof(new_direct));
-    disk.write(free_block, (uint8_t*)new_direct);
+    CWD = tempcwd;
+    current_index = temp_index;
+    std::memcpy(parent_index, temp_parent_index, sizeof(parent_index));
+    disk.read(parent_index[current_index], (uint8_t*)current_direct);
     return 0;
+
 }
 
 // cd <dirpath> changes the current (working) directory to the directory named <dirpath>
@@ -606,7 +733,14 @@ FS::cd(std::string dirpath)
         std::memcpy(current_direct, temp_dir, sizeof(current_direct));
         parent_index[current_index] = tempParent_index[current_index];
         CWD = tempcwd;
-        return -1;
+
+        if (res == -2)
+        {
+            std::cout << dirpath << " is not a directory\n";
+        }else{
+            std::cout << dirpath << " not found\n";
+        }
+        return 0;
     }
 
     return 0;
@@ -711,19 +845,19 @@ FS::set_current_to(std::string dirpath)
             if (sub != "") {
                 i = j + 1;
                 int8_t dir_index = find_file(sub, current_direct);
-                if (dir_index < 0) {
-                    std::cout << sub << " not found\n";
+                if (dir_index < 0)
                     return -1;
-                }
-                if (current_direct[dir_index].type != TYPE_DIR) {
-                    std::cout << sub << " is not a directory\n";
-                    return -1;
-                }
+                
+                if (current_direct[dir_index].type != TYPE_DIR)
+                    return -2;
 
                 current_index++;
                 parent_index[current_index] = current_direct[dir_index].first_blk;
                 disk.read(parent_index[current_index], (uint8_t*)current_direct);
-                CWD += sub + "/";
+                if (CWD == "/")
+                    CWD += sub;
+                else
+                    CWD += '/' + sub;
             }
         }
     }else{
@@ -738,33 +872,36 @@ FS::set_current_to(std::string dirpath)
             if (sub != "") {
                 i = j + 1;
                 if (sub == "..") {
-                    if (CWD == "/") {
+                    if (CWD == "/")
                         return 0;
-                    }
+                    
 
                     int k = CWD.size() - 2;
-                    while (CWD[k] != '/') {
+                    while (CWD[k] != '/')
                         k--;
-                    }
 
                     CWD = CWD.substr(0, k + 1);
                     current_index--;
                     disk.read(parent_index[current_index], (uint8_t*)current_direct);
                 }else{
                     int8_t dir_index = find_file(sub, current_direct);
-                    if (dir_index < 0) {
-                        std::cout << sub << " not found\n";
+                    if (current_direct[dir_index].type != TYPE_DIR)
+                        return -2;
+                    
+                    if (dir_index < 0)
                         return -1;
-                    }
-                    if (current_direct[dir_index].type != TYPE_DIR) {
-                        std::cout << sub << " is not a directory\n";
-                        return -1;
-                    }
+                    
+                    if (current_direct[dir_index].type != TYPE_DIR)
+                        return -2;
+                    
                     current_index++;
                     parent_index[current_index] = current_direct[dir_index].first_blk;
                     disk.read(parent_index[current_index], (uint8_t*)current_direct);
-                    CWD += sub + "/";
-                }
+                    if (CWD == "/")
+                        CWD += sub;
+                    else
+                        CWD += '/' + sub;
+                    }
             }
         }
     }
