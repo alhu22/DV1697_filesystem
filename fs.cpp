@@ -51,22 +51,8 @@ FS::create(std::string filepath)
         return 0;
     }
 
-
-
-
-
-
     int8_t j = filepath.find_last_of('/');
     std::string source_file = filepath.substr(j + 1, filepath.size() - j);
-    // std::string sourcepath = filepath.substr(0, i);
-
-    // if (sourcepath != "") {
-    //     int8_t res = set_current_to(sourcepath);
-    //     if (res < 0) {
-    //         return 0;
-    //     }
-    // }
-
 
     // get user input for the file content
     std::string content;
@@ -80,29 +66,36 @@ FS::create(std::string filepath)
         return 0;
     }
 
-    int8_t file_index = find_file(filepath, current_direct);
-    if (file_index >= 0) {
-        std::cout << filepath << " already exists\n";
-        return 0;
+    int count_block_needed = content.size() / BLOCK_SIZE;
+    int remainder = content.size() % BLOCK_SIZE;
+    if (remainder > 0) {
+        count_block_needed++;
     }
-
-    int free_block = find_free_block();
-    if (free_block < 0) {
-        return 0;
+    int8_t first_blks[count_block_needed + 1] = {FAT_EOF};
+    int free_block;
+    for (int i = 0; i < count_block_needed; i++) {
+        free_block = find_free_block();
+        if (free_block < 0)
+            return 0;
+        first_blks[i] = free_block;
+        fat[free_block] = FAT_EOF;
+        disk.write(FAT_BLOCK, (uint8_t*)fat);
+        disk.write(free_block, (uint8_t*)content.substr(i * BLOCK_SIZE, BLOCK_SIZE).c_str());
     }
-
-    fat[free_block] = FAT_EOF;
+    
+    for (int i = 0; i < count_block_needed; i++) {
+        fat[first_blks[i]] = first_blks[i + 1];
+    }
+    fat[first_blks[count_block_needed-1]] = FAT_EOF;
     disk.write(FAT_BLOCK, (uint8_t*)fat);
 
     dir_entry new_file;
     std::strncpy(new_file.file_name, filepath.c_str(), sizeof(new_file.file_name) - 1);
     new_file.file_name[sizeof(new_file.file_name) - 1] = '\0'; // Ensure null-termination
     new_file.size = content.size();
-    new_file.first_blk = free_block;
+    new_file.first_blk = first_blks[0];
     new_file.type = TYPE_FILE;
-    new_file.access_rights = READ | WRITE | EXECUTE;
-    
-    disk.write(free_block, (uint8_t*)content.c_str());
+    new_file.access_rights = READ | WRITE;
 
     for (int i = 0; i < N_DIRECTORIES; i++) {
         if (current_direct[i].file_name[0] == '\0') {
@@ -148,8 +141,9 @@ FS::cat(std::string filepath)
 
     int block = current_direct[file_index].first_blk;
     while (block != FAT_EOF) {
-        uint8_t buffer[BLOCK_SIZE];
+        uint8_t buffer[BLOCK_SIZE+1];
         disk.read(block, buffer);
+        buffer[BLOCK_SIZE] = '\0';  // Ensure null-termination
         std::cout << (char*)buffer;
         block = fat[block];
     }
@@ -160,7 +154,6 @@ FS::cat(std::string filepath)
 int
 FS::ls()
 {
-
     std::cout << "name        type       accessrights     size\n";
     std::cout << "______________________________________________\n";
     for (unsigned i = 0; i < N_DIRECTORIES; ++i) {
@@ -329,7 +322,6 @@ FS::cp(std::string sourcepath, std::string destpath)
     current_index = temp_index;
     std::memcpy(parent_index, temp_parent_index, sizeof(parent_index));
     disk.read(parent_index[current_index], (uint8_t*)current_direct);
-
     return 0;
 }
 
@@ -457,12 +449,26 @@ FS::mv(std::string sourcepath, std::string destpath)
 int
 FS::rm(std::string filepath)
 {
-
     int8_t file_index = find_file(filepath, current_direct);
     if (file_index < 0) {
         std::cout << filepath << " not found\n";
         return 0;
     }
+
+    // int8_t count = 0;
+    // if (current_direct[file_index].type != TYPE_FILE){
+    //     for (int i = 0; i < N_DIRECTORIES; i++) {
+    //         if (current_direct[i].file_name[0] == '\0') {
+    //             break;
+    //         }
+    //         count += 1;
+    //     }
+    // }
+
+    // if (count > 0){
+    //     std::cout << filepath << " is not empty\n";
+    //     return 0;
+    // }
 
     int block = current_direct[file_index].first_blk;
     while (block != FAT_EOF) {
@@ -473,8 +479,6 @@ FS::rm(std::string filepath)
     disk.write(FAT_BLOCK, (uint8_t*)fat);
     std::memset(&current_direct[file_index], 0, sizeof(dir_entry));
     disk.write(parent_index[current_index], (uint8_t*)current_direct);
-
-
     return 0;
 }
 
@@ -632,7 +636,6 @@ FS::append(std::string filepath1, std::string filepath2)
     CWD = tempcwd;
     current_index = temp_index;
     disk.read(parent_index[current_index], (uint8_t*)current_direct);
-
     return 0;
 }
 
@@ -704,9 +707,7 @@ FS::mkdir(std::string dirpath)
                 disk.write(free_block, (uint8_t*)new_direct);
 
                 set_current_to(dirname);
-
-            }
-            
+            }    
         }
     }
     CWD = tempcwd;
@@ -714,7 +715,6 @@ FS::mkdir(std::string dirpath)
     std::memcpy(parent_index, temp_parent_index, sizeof(parent_index));
     disk.read(parent_index[current_index], (uint8_t*)current_direct);
     return 0;
-
 }
 
 // cd <dirpath> changes the current (working) directory to the directory named <dirpath>
@@ -742,7 +742,6 @@ FS::cd(std::string dirpath)
         }
         return 0;
     }
-
     return 0;
 }
 
@@ -768,6 +767,9 @@ FS::chmod(std::string accessrights, std::string filepath)
 
     dir_entry *file = &current_direct[file_index];
     switch (std::stoi(accessrights)) {
+        case 0:
+            file->access_rights = 0x00;
+            break;
         case 1:
             file->access_rights = EXECUTE;
             break;
@@ -876,11 +878,11 @@ FS::set_current_to(std::string dirpath)
                         return 0;
                     
 
-                    int k = CWD.size() - 2;
-                    while (CWD[k] != '/')
-                        k--;
+                    // int k = CWD.size() - 2;
+                    // while (CWD[k] != '/')
+                    //     k--;
 
-                    CWD = CWD.substr(0, k + 1);
+                    CWD = CWD.substr(0, CWD.find_last_of('/'));
                     current_index--;
                     disk.read(parent_index[current_index], (uint8_t*)current_direct);
                 }else{
