@@ -39,6 +39,13 @@ FS::format()
 int
 FS::create(std::string filepath)
 {
+    dir_entry parentt[64];
+    disk.read(parent_index[current_index], (uint8_t*)parentt);
+    int8_t right = static_cast<int>(parentt[current_index].access_rights);
+    if (right != 2 || right != 6 || right != 3, right != 7) {
+        std::cout << "Permission denied\n";
+        return 0;
+    }
     int8_t i;
     for (i = 0; i < N_DIRECTORIES; i++) {
         if (current_direct[i].file_name[0] == '\0') {
@@ -53,6 +60,7 @@ FS::create(std::string filepath)
 
     int8_t j = filepath.find_last_of('/');
     std::string source_file = filepath.substr(j + 1, filepath.size() - j);
+
 
     // get user input for the file content
     std::string content;
