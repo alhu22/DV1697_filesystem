@@ -42,7 +42,7 @@ FS::create(std::string filepath)
     dir_entry parentt[64];
     disk.read(parent_index[current_index], (uint8_t*)parentt);
     int8_t right = static_cast<int>(parentt[current_index].access_rights);
-    if (right != 2 || right != 6 || right != 3, right != 7) {
+    if (right == 0 || right == 1 || right == 4, right == 5) {
         std::cout << "Permission denied\n";
         return 0;
     }
