@@ -758,6 +758,10 @@ FS::cd(std::string dirpath)
 int
 FS::pwd()
 {
+    if (CWD == "") {
+        std::cout << '/' << "\n";
+        return 0;
+    }
     std::cout << CWD << "\n";
     return 0;
 }
@@ -767,13 +771,44 @@ FS::pwd()
 int
 FS::chmod(std::string accessrights, std::string filepath)
 {
-    int8_t file_index = find_file(filepath, current_direct);
-    if (file_index < 0) {
-        std::cout << filepath << " not found\n";
-        return 0;
+    int8_t index = filepath.find_last_of('/');
+    int8_t file_index;
+    dir_entry *file;
+    std::string tempcwd = CWD;
+    int8_t tempParent_index[64];
+    int8_t temp_index = current_index;
+    dir_entry temp_dir[N_DIRECTORIES];
+
+    if (index < 0) {
+        file_index = find_file(filepath, current_direct);
+        if (file_index < 0) {
+            std::cout << filepath << " not found\n";
+            return 0;
+        }
+        file = &current_direct[file_index];
+    }else{
+        std::string dirpath = filepath.substr(0, index+1);
+        std::string filename = filepath.substr(index + 1, filepath.size() - index);
+        std::memcpy(temp_dir, current_direct, sizeof(current_direct));
+        std::memcpy(tempParent_index, parent_index, sizeof(parent_index));
+        int8_t res = set_current_to(dirpath);
+        file_index = find_file(filename, current_direct);
+        file = &current_direct[file_index];
+        if (file_index < 0) {
+            std::cout << filename << " not found\n";
+            return 0;
+        }
+        if (res < 0) {
+            if (res == -2)
+            {
+                std::cout << dirpath << " is not a directory\n";
+            }else{
+                std::cout << dirpath << " not found\n";
+            }
+            return 0;
+        }
     }
 
-    dir_entry *file = &current_direct[file_index];
     switch (std::stoi(accessrights)) {
         case 0:
             file->access_rights = 0x00;
@@ -802,6 +837,14 @@ FS::chmod(std::string accessrights, std::string filepath)
         
     }
     disk.write(parent_index[current_index], (uint8_t*)current_direct);
+
+    if (index >= 0) {
+        CWD = tempcwd;
+        current_index = temp_index;
+        std::memcpy(current_direct, temp_dir, sizeof(current_direct));
+        parent_index[current_index] = tempParent_index[current_index];
+    }
+    disk.read(parent_index[current_index], (uint8_t*)current_direct);
     return 0;
 }
 
