@@ -1,0 +1,91 @@
+/* frontend/src/Feedback.css */
+
+.feedback-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 40px auto;
+    max-width: 500px;
+    width: 90%;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  .feedback-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #273469; /* Or your preferred header color */
+    text-align: center;
+  }
+  
+  .feedback-container form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .feedback-container textarea {
+    width: 100%;
+    height: 150px;
+    resize: none;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    padding: 10px;
+    transition: border-color 0.2s ease;
+  }
+  
+  .feedback-container textarea:focus {
+    border-color: #4a5cac;
+    outline: none;
+  }
+  
+  .feedback-container button[type="submit"] {
+    margin-top: 15px;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(90deg, #273469 0%, #4a5cac 100%);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .feedback-container button[type="submit"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(74, 92, 172, 0.4);
+  }
+  
+  .feedback-message {
+    margin-top: 20px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-align: center;
+  }
+  
+  .feedback-message.success {
+    color: green;
+  }
+  
+  .feedback-message.error {
+    color: red;
+  }
+  
+  /* Optional: Make container responsive */
+  @media (max-width: 480px) {
+    .feedback-container {
+      padding: 20px;
+    }
+  
+    .feedback-container h2 {
+      font-size: 1.2rem;
+    }
+  }
+  

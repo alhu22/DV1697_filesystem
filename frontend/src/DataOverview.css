@@ -1,0 +1,1237 @@
+/* frontend/src/DataOverview.css */
+.data-overview {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  border-radius: 8px;
+}
+
+.data-overview h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #2c3e50;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.data-overview h2 {
+  color: #273469;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+  margin-top: 0;
+  font-size: 1.6rem;
+}
+
+/* Tab Navigation */
+.section-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: white;
+  border-radius: 8px 8px 0 0;
+  padding: 0 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.section-tabs button {
+  background: transparent;
+  border: none;
+  padding: 15px 25px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  margin: 0 5px;
+  letter-spacing: 0.5px;
+}
+
+.section-tabs button:hover {
+  color: #273469;
+  background-color: #f8f9fa;
+}
+
+.section-tabs button.active {
+  color: #273469;
+  font-weight: bold;
+}
+
+.section-tabs button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #273469;
+}
+
+/* Section Content */
+.section-content {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+}
+
+.entity-section {
+  margin-bottom: 40px;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Forms */
+.data-form {
+  background: #f9f9f9;
+  padding: 25px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eee;
+  max-width: 100%;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  background-color: white;
+  box-sizing: border-box; /* Ensures padding doesn't add to width */
+}
+
+.form-group textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #273469;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+}
+
+/* Multi-field handling */
+.multi-field-container {
+  border: 1px solid #eee;
+  padding: 18px;
+  border-radius: 6px;
+  background: #fff;
+  width: 100%;
+}
+
+.multi-field-row {
+  display: flex;
+  margin-bottom: 12px;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.multi-field-row select,
+.multi-field-row input {
+  flex-grow: 1;
+  min-width: 0; /* Prevents flex items from overflowing */
+  width: calc(100% - 95px); /* Account for button width + gap */
+}
+
+/* Square styling for all buttons in multi-field rows */
+.multi-field-row button {
+  width: 80px;
+  height: 35px;
+  padding: 0;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 13px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  margin: 0;
+  flex-shrink: 0; /* Prevents button from shrinking */
+}
+
+.multi-field-row button:hover {
+  transform: translateY(0);
+  filter: brightness(1.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Buttons */
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-size: 15px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+.btn-primary {
+  background-color: #273469;
+  color: white;
+  padding: 12px 20px;
+}
+
+.btn-primary:hover {
+  background-color: #273469;
+}
+
+/* Square action buttons styling */
+.actions-cell button {
+  width: 80px;
+  height: 35px;
+  margin: 0 3px;
+  padding: 0;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 13px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.actions-cell button:hover {
+  transform: translateY(0);
+  filter: brightness(1.1);
+}
+
+/* Square add buttons in multi-field containers */
+.multi-field-row .btn-add,
+.multi-field-container .btn-add {
+  width: auto;
+  min-width: 120px;
+  height: 35px;
+  padding: 0 15px;
+  margin-top: 10px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 13px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #273469;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.multi-field-row .btn-add:hover,
+.multi-field-container .btn-add:hover {
+  transform: translateY(0);
+  filter: brightness(1.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn-add {
+  background-color: #273469;
+  color: white;
+}
+
+.btn-add:hover {
+  background-color: #273469;
+}
+
+.btn-remove {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-remove:hover {
+  background-color: #c0392b;
+}
+
+.btn-edit {
+  background-color: #f39c12;
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #e67e22;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn-cancel {
+  background-color: #95a5a6;
+  color: white;
+  margin-left: 10px;
+}
+
+.btn-cancel:hover {
+  background-color: #7f8c8d;
+}
+
+/* Form actions */
+.form-actions {
+  margin-top: 25px;
+  display: flex;
+}
+
+/* Tables */
+.table-container {
+  overflow-x: auto; /* Enables horizontal scrolling for tables on small screens */
+  -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
+  margin-bottom: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+th, td {
+  border: 1px solid #e0e0e0;
+  padding: 14px 15px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f6fa;
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f0f7fc;
+}
+
+.actions-cell {
+  white-space: nowrap;
+  width: 185px;
+  text-align: center;
+}
+
+/* Specific styling for accepted answers in units */
+.accepted-answer-tag {
+  display: inline-block;
+  background-color: #eaf4fc;
+  border: 1px solid #bce0fd;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin: 3px;
+  font-size: 0.9em;
+}
+
+/* Add responsiveness */
+@media (max-width: 1024px) {
+  /* iPad and larger tablets */
+  .actions-cell button {
+    margin: 0 2px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+  
+  .section-tabs button {
+    padding: 15px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .data-overview {
+    padding: 15px;
+  }
+  
+  .section-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .section-tabs button {
+    flex-grow: 1;
+    padding: 12px 8px;
+    font-size: 14px;
+    min-width: 45%;
+  }
+  
+  .section-content {
+    padding: 15px;
+  }
+  
+  .data-form {
+    padding: 15px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions button {
+    width: 100%;
+    margin-bottom: 10px;
+    margin-left: 0;
+  }
+  
+  .actions-cell {
+    display: flex;
+    gap: 8px;
+    width: auto;
+    justify-content: center;
+    padding: 10px 5px;
+  }
+  
+  .actions-cell button {
+    width: 75px;
+    margin: 0;
+  }
+  
+  th, td {
+    padding: 10px;
+  }
+  
+  .form-group label {
+    margin-bottom: 5px;
+  }
+  
+  .multi-field-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .multi-field-row input,
+  .multi-field-row select {
+    width: 100%; /* Full width on mobile */
+  }
+  
+  .multi-field-row button {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  /* Better touch targets */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 12px 10px;
+    min-height: 44px; /* Minimum touch target size */
+  }
+  
+  /* Ensure tables are scrollable */
+  .table-container {
+    margin: 0 -10px 20px -10px;
+    width: calc(100% + 20px);
+    border-radius: 0;
+  }
+  
+  /* Prevent tables from being too squished */
+  .table-container table {
+    min-width: 600px;
+  }
+
+  /* Increase touch targets */
+  .section-tabs button {
+    padding: 14px 12px;
+    min-height: 50px;
+  }
+  
+  /* Improve multi-field spacing on mobile */
+  .multi-field-row {
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .multi-field-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  
+  /* Better form handling for mobile */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 14px;
+    border-radius: 8px;
+    -webkit-appearance: none; /* Removes default styling on iOS */
+  }
+  
+  /* Fix iOS form zooming issue */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Better spacing for tables on mobile */
+  td, th {
+    padding: 12px 8px;
+    font-size: 14px;
+  }
+  
+  /* Handle horizontal scroll indicators better */
+  .table-container {
+    position: relative;
+  }
+  
+  .table-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 20px;
+    background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.7));
+    pointer-events: none;
+  }
+
+  /* Improve button styling */
+  button {
+    min-height: 44px; /* Better touch targets */
+    transition: background-color 0.3s;
+  }
+  
+  /* Remove animations that might be sluggish on mobile */
+  button:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .data-overview h1 {
+    font-size: 1.7rem;
+  }
+  
+  .data-overview h2 {
+    font-size: 1.4rem;
+  }
+  
+  .section-tabs button {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  /* Adjust padding for smaller screens */
+  .data-overview {
+    padding: 15px 10px;
+  }
+  
+  /* More compact section tabs */
+  .section-tabs {
+    border-radius: 6px 6px 0 0;
+  }
+  
+  .section-tabs button {
+    padding: 12px 5px;
+    font-size: 14px;
+  }
+  
+  /* More compact form and content */
+  .section-content {
+    padding: 15px 12px;
+  }
+  
+  .data-form {
+    padding: 15px 12px;
+  }
+  
+  /* Ensure action buttons are usable */
+  .actions-cell button {
+    width: 70px; /* Slightly smaller width */
+    height: 40px; /* But taller height for better touch targets */
+    font-size: 12px;
+  }
+  
+  /* Make tables more compact but still scrollable */
+  .table-container table {
+    min-width: 480px;
+  }
+  
+  th, td {
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+  
+  /* Fix multi-field button spacing */
+  .multi-field-row .btn-add,
+  .multi-field-container .btn-add {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
+
+/* iPhone SE and other very small devices */
+@media (max-width: 375px) {
+  .actions-cell button {
+    width: 65px;
+    font-size: 11px;
+    padding: 0;
+  }
+  
+  th, td {
+    padding: 8px 6px;
+    font-size: 13px;
+  }
+  
+  .table-container table {
+    min-width: 450px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions button {
+    width: 100%;
+    margin-bottom: 10px;
+    margin-left: 0;
+  }
+
+  .data-overview {
+    padding: 10px;
+  }
+  
+  .section-tabs {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 5px;
+  }
+  
+  .section-tabs button {
+    padding: 10px 5px;
+    font-size: 13px;
+    width: 50%;
+    border-radius: 0;
+  }
+  
+  /* Stack form actions vertically */
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* Full width buttons */
+  .form-actions button {
+    width: 100%;
+  }
+  
+  /* More compact tables */
+  th, td {
+    padding: 8px 4px;
+    font-size: 12px;
+  }
+  
+  /* Fix padding for very tight spaces */
+  .form-group {
+    margin-bottom: 8px;
+  }
+}
+
+/* iPad specific adjustments */
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px) {
+  
+  .multi-field-row {
+    flex-direction: row;
+    gap: 10px;
+  }
+  
+  .multi-field-row input,
+  .multi-field-row select {
+    width: calc(100% - 90px);
+  }
+  
+  .multi-field-row button {
+    width: 80px;
+  }
+}
+
+/* iPad Pro specific adjustments */
+@media only screen 
+  and (min-device-width: 1024px) 
+  and (max-device-width: 1366px) {
+  
+  .data-overview {
+    max-width: 1000px;
+  }
+
+  .data-overview {
+    padding: 30px;
+    max-width: 1200px;
+  }
+  
+  /* Better utilize the wider screen */
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  /* Multi-field rows side by side */
+  .multi-field-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+  }
+}
+
+/* Loading Indicator */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  width: 100%;
+}
+
+.loading-spinner::after {
+  content: "";
+  width: 40px;
+  height: 40px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #273469;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Cards for mobile - an alternative to tables on small screens */
+.mobile-card-view {
+  display: none; /* Hidden by default, shown on mobile */
+}
+
+.data-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 4px solid #273469;
+}
+
+.data-card h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #273469;
+}
+
+.data-card p {
+  margin: 5px 0;
+  font-size: 14px;
+  display: flex;
+}
+
+.data-card-label {
+  font-weight: bold;
+  width: 40%;
+  color: #555;
+}
+
+.data-card-value {
+  width: 60%;
+  word-break: break-word;
+}
+
+.data-card-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Improve the loading indicator */
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  font-size: 16px;
+  color: #273469;
+}
+
+.loading-indicator::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #273469;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Mobile improvements */
+@media (max-width: 480px) {
+  /* Show cards instead of tables */
+  .table-container {
+    display: none;
+  }
+  
+  .mobile-card-view {
+    display: block;
+  }
+  
+  /* More compact forms */
+  .form-group label {
+    font-size: 14px;
+  }
+  
+  /* Smaller heading sizes */
+  .data-overview h1 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .data-overview h2 {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  /* Minimize padding to maximize space */
+  .section-content {
+    padding: 10px 5px;
+  }
+  
+  .data-form {
+    padding: 10px 5px;
+    margin-bottom: 15px;
+  }
+  
+  /* Make buttons easier to tap */
+  .data-card-actions button {
+    min-height: 40px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+  
+  /* Stack form controls better */
+  .form-group {
+    margin-bottom: 10px;
+  }
+  
+  /* Remove animations that might cause lag on mobile */
+  .entity-section {
+    animation: none;
+    margin-bottom: 20px;
+  }
+  
+  /* Compact multi-field containers */
+  .multi-field-container {
+    padding: 8px;
+  }
+  
+  /* Collapsible forms */
+  .form-toggle-btn {
+    background-color: #273469;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 12px;
+    margin-left: 10px;
+  }
+  
+  .form-collapsed {
+    display: none;
+  }
+  
+  /* More compact cards */
+  .data-card {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+  }
+  
+  .data-card h3 {
+    font-size: 15px;
+    margin-bottom: 5px;
+  }
+  
+  .data-card p {
+    margin: 3px 0;
+    font-size: 13px;
+  }
+  
+  /* Section tabs improvements */
+  .section-tabs button {
+    padding: 10px 5px;
+    min-height: 0;
+    font-size: 13px;
+  }
+  
+  /* Make input fields smaller */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 8px;
+    min-height: 36px;
+    font-size: 14px;
+  }
+  
+  /* Smaller primary buttons */
+  .btn-primary {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  
+  /* Mobile specific multi-field rows */
+  .multi-field-row {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+  }
+  
+  /* More efficient card action buttons */
+  .data-card-actions {
+    margin-top: 8px;
+  }
+}
+
+/* Extra small screens - iPhone SE, etc. */
+@media (max-width: 360px) {
+  .data-overview {
+    padding: 5px;
+  }
+  
+  .section-content {
+    padding: 5px 3px;
+  }
+  
+  .data-form {
+    padding: 8px 5px;
+  }
+  
+  /* Extremely compact section tabs */
+  .section-tabs {
+    padding: 0;
+  }
+  
+  .section-tabs button {
+    font-size: 11px;
+    padding: 8px 0;
+  }
+  
+  /* Ultra-compact cards */
+  .data-card {
+    padding: 8px;
+  }
+  
+  .data-card-actions button {
+    padding: 0 6px;
+    font-size: 11px;
+    min-height: 32px;
+  }
+  
+  /* Stack the label and value in cards for more space */
+  .data-card p {
+    flex-direction: column;
+  }
+  
+  .data-card-label, .data-card-value {
+    width: 100%;
+  }
+  
+  /* Even smaller heading */
+  .data-overview h1 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .data-overview h2 {
+    font-size: 15px;
+  }
+  
+  /* Fix padding for very tight spaces */
+  .form-group {
+    margin-bottom: 8px;
+  }
+}
+
+/* Mobile improvements - making everything much smaller */
+@media (max-width: 480px) {
+  /* Show cards instead of tables */
+  .table-container {
+    display: none;
+  }
+  
+  .mobile-card-view {
+    display: block;
+  }
+  
+  /* Ultra compact design */
+  .data-overview {
+    padding: 5px;
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+  }
+  
+  /* Significantly reduce header size */
+  .data-overview h1 {
+    font-size: 18px;
+    margin: 8px 0;
+    padding: 0;
+  }
+  
+  /* Smaller section header with toggle button */
+  .data-overview h2 {
+    font-size: 16px;
+    padding: 5px 0;
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  /* Severely reduce padding */
+  .section-content {
+    padding: 5px 3px;
+    box-shadow: none;
+    margin: 0;
+    border-radius: 4px;
+  }
+  
+  /* Minimize tab buttons */
+  .section-tabs {
+    margin-bottom: 10px;
+    padding: 0;
+    border-radius: 4px;
+  }
+  
+  .section-tabs button {
+    font-size: 11px;
+    padding: 8px 2px;
+    margin: 0;
+    min-height: 0;
+    width: 25%;
+    flex: 1;
+  }
+  
+  /* Collapse by default, expand on demand */
+  .form-collapsed {
+    display: none;
+  }
+  
+  /* Make form extremely compact */
+  .data-form {
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+  
+  .form-group {
+    margin-bottom: 5px;
+  }
+  
+  .form-group label {
+    font-size: 13px;
+    margin-bottom: 3px;
+    font-weight: normal;
+  }
+  
+  /* Smaller input fields */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 6px;
+    min-height: 32px;
+    font-size: 13px;
+    border-radius: 4px;
+  }
+  
+  /* More compact cards with minimal margins */
+  .data-card {
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    border-left-width: 3px;
+  }
+  
+  .data-card h3 {
+    font-size: 14px;
+    margin: 0 0 5px 0;
+  }
+  
+  .data-card p {
+    margin: 2px 0;
+    font-size: 12px;
+  }
+  
+  .data-card-label {
+    width: 35%;
+    font-size: 12px;
+  }
+  
+  .data-card-value {
+    width: 65%;
+    font-size: 12px;
+  }
+  
+  /* Smaller action buttons in cards */
+  .data-card-actions {
+    margin-top: 6px;
+    gap: 5px;
+  }
+  
+  .data-card-actions button {
+    min-height: 30px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+  
+  /* Smaller toggle button */
+  .form-toggle-btn {
+    padding: 3px 6px;
+    font-size: 11px;
+    border-radius: 3px;
+  }
+  
+  /* Smaller form action buttons */
+  .btn-primary, 
+  .btn-cancel {
+    padding: 6px 10px;
+    font-size: 13px;
+    height: auto;
+  }
+  
+  /* More compact form actions */
+  .form-actions {
+    margin-top: 10px;
+    gap: 5px;
+  }
+  
+  /* Multi field containers */
+  .multi-field-container {
+    padding: 5px;
+    border-radius: 4px;
+  }
+  
+  .multi-field-row {
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    gap: 5px;
+  }
+  
+  .multi-field-row button {
+    min-height: 30px;
+    font-size: 11px;
+  }
+  
+  /* Entity section with less margin */
+  .entity-section {
+    margin-bottom: 10px;
+  }
+  
+  /* No animations on mobile */
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Ultra-small screens - reduce even further */
+@media (max-width: 360px) {
+  .data-overview h1 {
+    font-size: 16px;
+  }
+  
+  .data-overview h2 {
+    font-size: 14px;
+  }
+  
+  .section-tabs button {
+    font-size: 10px;
+    padding: 6px 1px;
+  }
+  
+  .data-card-actions button {
+    padding: 0 5px;
+    min-height: 28px;
+    font-size: 10px;
+  }
+  
+  .data-card p {
+    flex-direction: column;
+  }
+  
+  .data-card-label, 
+  .data-card-value {
+    width: 100%;
+    font-size: 11px;
+  }
+  
+  .form-group label {
+    font-size: 12px;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 5px;
+    min-height: 30px;
+    font-size: 12px;
+  }
+}

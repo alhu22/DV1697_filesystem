@@ -1,0 +1,228 @@
+:root {
+  --primary-dark: #1e2a5a;
+  --primary-light: #3f51b5;
+  --white: #ffffff;
+  --white-15: rgba(255, 255, 255, 0.15);
+  --white-25: rgba(255, 255, 255, 0.25);
+  --white-30: rgba(255, 255, 255, 0.3);
+  --border-light: rgba(255, 255, 255, 0.1);
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-medium: rgba(0, 0, 0, 0.25);
+  --font-family: 'Montserrat', sans-serif;
+}
+
+.menu-bar {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+  padding: 0;
+  box-shadow: 0 2px 5px var(--shadow-light);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  font-family: var(--font-family);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 15px 20px;
+}
+
+.menu-buttons {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0 20px 15px;
+}
+
+.menu-separator {
+  margin: 0 5px;
+  font-size: 1.5rem;
+  color: var(--white-30);
+  user-select: none;
+}
+
+.menu-bar button, 
+.menu-item {
+  background: none;
+  border: none;
+  color: var(--white);
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-weight: 600;
+  transition: transform 0.3s ease, color 0.3s ease;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  letter-spacing: 0.2px;
+}
+
+.menu-bar button:hover, 
+.menu-item:hover {
+  color: #f0f0f0;
+  transform: scale(1.05);
+}
+
+.menu-title {
+  color: var(--white);
+  font-family: var(--font-family);
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: 0.2px;
+}
+
+.menu-button {
+  background-color: var(--white-15);
+  border: 1px solid var(--white-30);
+  border-radius: 4px;
+  color: var(--white);
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 8px 15px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-button:hover {
+  background-color: var(--white-25);
+  transform: scale(1.03);
+}
+
+.menu-button:active {
+  transform: scale(0.97);
+}
+
+.menu-button.active {
+  background-color: var(--white-30);
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .menu-bar {
+    padding: 0;
+  }
+  
+  .menu-header {
+    padding: 12px 15px;
+    box-shadow: 0 1px 0 var(--border-light);
+    justify-content: space-between;
+  }
+
+  .menu-title {
+    font-size: 1.1rem;
+  }
+  
+  .menu-buttons {
+    padding: 0;
+    width: 100%;
+  }
+  
+  .menu-buttons.mobile {
+    flex-direction: column;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out, box-shadow 0.3s ease;
+    align-items: flex-start;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+    box-shadow: none;
+    z-index: 90;
+  }
+  
+  .menu-buttons.mobile.open {
+    max-height: 300px;
+    padding: 10px 0;
+    box-shadow: 0 4px 8px var(--shadow-medium);
+  }
+  
+  .menu-buttons.mobile .menu-item {
+    width: 100%;
+    text-align: left;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .menu-buttons.mobile .menu-item:last-child {
+    border-bottom: none;
+  }
+  
+  .menu-separator {
+    display: none;
+  }
+  
+  /* Animation for menu items */
+  .menu-buttons.mobile .menu-item {
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition-delay: calc(var(--item-index) * 0.05s);
+  }
+  
+  .menu-buttons.mobile.open .menu-item {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .menu-button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+/* iPad specific styles */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .menu-header {
+    padding: 15px 20px;
+  }
+  
+  .menu-title {
+    font-size: 1.3rem;
+  }
+  
+  .menu-buttons.mobile .menu-item {
+    padding: 18px 25px;
+    font-size: 1.1rem;
+  }
+
+  .menu-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+}
+
+/* Mobile phone specific styles */
+@media (max-width: 767px) {
+  .menu-header {
+    padding: 10px 15px;
+  }
+  
+  .menu-title {
+    font-size: 1rem;
+  }
+
+  .menu-buttons.mobile .menu-item {
+    padding: 12px 15px;
+    font-size: 0.9rem;
+  }
+
+  .menu-button {
+    padding: 7px 14px;
+    font-size: 0.8rem;
+  }
+}

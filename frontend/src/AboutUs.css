@@ -1,0 +1,177 @@
+.about-us-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-image: url('../public/bild_1.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.about-us-container {
+  flex: 1;
+  width: 90%;
+  max-width: 1200px;
+  margin: 90px auto 40px;
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.about-us-container h1 {
+  margin-bottom: 20px;
+  color: #273469;
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.about-us-intro {
+  max-width: 800px;
+  margin: 0 auto 40px;
+  color: #444;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.team-member-card {
+  overflow: hidden;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-member-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(39, 52, 105, 0.15);
+}
+
+.member-image-container {
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+}
+
+/* Base member image styles */
+.member-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Individual member images */
+.member-image-1 {
+  background-image: url('../public/profil4.jpg');
+}
+
+.member-image-2 {
+  background-image: url('../public/profil2.jpg');
+}
+
+.member-image-3 {
+  background-image: url('../public/profil1.jpg');
+}
+
+.member-image-4 {
+  background-image: url('../public/profil3.jpg');
+}
+
+.team-member-card:hover .member-image {
+  transform: scale(1.05);
+}
+
+.member-info {
+  padding: 20px;
+}
+
+.member-info h3 {
+  margin: 0 0 5px;
+  color: #273469;
+  font-size: 1.3rem;
+}
+
+.member-role {
+  margin: 0 0 15px;
+  color: #4a5cac;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.member-contact {
+  font-size: 0.95rem;
+}
+
+.member-contact p {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.contact-icon {
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+.member-contact a {
+  color: #273469;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.member-contact a:hover {
+  color: #4a5cac;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .about-us-container {
+    margin-top: 70px;
+    padding: 20px;
+  }
+
+  .about-us-container h1 {
+    font-size: 2rem;
+  }
+
+  .team-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .member-image-container {
+    height: 240px;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-us-container {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .about-us-container h1 {
+    font-size: 1.8rem;
+  }
+
+  .about-us-intro {
+    font-size: 1rem;
+  }
+}
